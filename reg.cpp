@@ -159,7 +159,7 @@ processor_t LPH =
   NULL,                 // int (*get_frame_retsize(func_t *pfn)
   NULL,                 // void (*gen_stkvar_def)(char *buf,const member_t *mptr,int32 v);
   gen_spcdef,           // Generate text representation of an item in a special segment
-  HS_nop,               // Icode of return instruction. It is ok to give any of possible return instructions
+  HS_ret,               // Icode of return instruction. It is ok to give any of possible return instructions
   NULL,                 // const char *(*set_idp_options)(const char *keyword,int value_type,const void *value);
   NULL,                 // int (*is_align_insn)(ea_t ea);
   NULL,                 // mvm_t *mvm;
