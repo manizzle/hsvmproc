@@ -1,9 +1,16 @@
+#ifndef __HS_HPP
+#define __HS_HPP
+
+
 #include "../idaidp.hpp"
 #include "ins.hpp"
 #include <srarea.hpp>
 #include <stdint.h>
 #include <idd.hpp>
 #include <xref.hpp>
+#include <ida.hpp>
+#include <idp.hpp>
+#include <diskio.hpp>
 
 void idaapi header( void );
 void idaapi footer( void );
@@ -28,3 +35,5 @@ enum hs_regs {
     rVcs,
     rVds
 };
+
+#endif

@@ -4,9 +4,7 @@
  *
  */
 
-#include <ida.hpp>
-#include <idp.hpp>
-#include "ins.hpp"
+#include "hs.hpp"
 
 instruc_t Instructions[] = {
     {NULL, 0}, 
