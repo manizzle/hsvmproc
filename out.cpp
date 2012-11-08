@@ -87,8 +87,6 @@ void idaapi out( void )
 
 bool idaapi outop( op_t &x )
 {
-  uval_t v;
-//  const char *ptr;
 
   switch( x.type )
   {
@@ -116,7 +114,7 @@ bool idaapi outop( op_t &x )
       return 0;
 
     default:
-      warning( "out: %a: bad optype %d", cmd.ea, x.type );
+      warning( "out: %u: bad optype %d", cmd.ea, x.type );
   }
 
   return 1;
