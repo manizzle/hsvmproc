@@ -9,5 +9,7 @@ enum hs_regs {
     r_rip,
     r_rbp,
     r_rsp,
-    r_r7
+    r_r7,
+    rVcs,
+    rVds
 };

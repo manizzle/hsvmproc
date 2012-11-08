@@ -14,7 +14,7 @@ ea_t extmem = BADADDR; // linear EA of the external memory segment
 //--------------------------------------------------------------------------
 static const char *RegNames[] =
 {
-    "r0", "r1", "r2", "r3", "r4", "r5", "r6", "r7", "rbp", "rsp", "rip" 
+    "r0", "r1", "r2", "r3", "r4", "r5", "r6", "rip", "rbp", "rsp", "r7", "cs", "ds" 
 };
 
 //----------------------------------------------------------------------
@@ -351,15 +351,8 @@ static ea_t idaapi z8_translate(ea_t base, adiff_t offset)
 processor_t LPH =
 {
   IDP_INTERFACE_VERSION,        // version
-  PLFM_Z8,                      // id
-  PRN_HEX
-  |PR_RNAMESOK          // can use register names for byte names
-  |PR_SEGTRANS          // segment translation is supported (codeSeg)
-  |PR_BINMEM            // The module creates RAM/ROM segments for binary files
-                        // (the kernel shouldn't ask the user about their sizes and addresses)
-  |PR_SEGS              // has segment registers?
-  |PR_SGROTHER,         // the segment registers don't contain
-                        // the segment selectors, something else
+  0x37337,                      // id
+  PRN_HEX,			// view in hex
   8,                            // 8 bits in a byte for code segments
   8,                            // 8 bits in a byte for other segments
 
@@ -396,15 +389,15 @@ processor_t LPH =
   NULL,                 // Register descriptions
   NULL,                 // Pointer to CPU registers
 
-  rVcs,rRp,
-  1,                    // size of a segment register
-  rVcs,rVds,
+  rVcs,rVds,		// first seg reg, second seg reg
+  0,                    // size of a segment register
+  rVcs,rVds,		// number of cs reg, number of ds reg
 
   NULL,                 // No known code start sequences
   retcodes,
 
-  HS_addr, HS_nop,
-  Instructions,
+  HS_addr, HS_nop+1,	// int of first inst, int of last instr + 1
+  Instructions,		// array of instructions
   NULL,                 // int  (*is_far_jump)(int icode);
   z8_translate,         // Translation function for offsets
   0,                    // int tbyte_size;  -- doesn't exist

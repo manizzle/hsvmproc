@@ -1,6 +1,6 @@
 /*
  *  Interactive disassembler (IDA).
- *  HSVM Z8 module
+ *  HSVM module
  *
  */
 
