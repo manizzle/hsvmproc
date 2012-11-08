@@ -30,6 +30,54 @@ static const char *lnames[]  = { "HSVM 1.4", NULL };
 
 //--------------------------------------------------------------------------
 
+netnode helper;
+//--------------------------------------------------------------------------
+static int notify(processor_t::idp_notify msgid, ...) { // Various messages:
+  va_list va;
+  va_start(va, msgid);
+
+// A well behaving processor module should call invoke_callbacks()
+// in his notify() function. If this function returns 0, then
+// the processor module should process the notification itself
+// Otherwise the code should be returned to the caller:
+
+  int code = invoke_callbacks(HT_IDP, msgid, va);
+  if ( code ) return code;
+
+
+  switch ( msgid )
+  {
+    case processor_t::init:
+      helper.create("$ HSVM HS");
+      inf.mf = 1;                                 // MSB first
+      break;
+
+    default:
+      break;
+
+    case processor_t::term:
+      break;
+
+    case processor_t::newfile:
+
+      break;
+
+    case processor_t::oldfile:
+      break;
+
+    case processor_t::newseg:
+      {                 // default DS is equal to CS
+          ;
+      }
+  }
+  va_end(va);
+
+  return(1);
+}
+
+/// ------------------------------------------------------
+/// -----------------------------------------------------
+
 static uchar retcode[]  = { 0xAF };   // ret
 static uchar iretcode[] = { 0xBF };   // iret
 
