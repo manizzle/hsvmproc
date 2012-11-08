@@ -1,7 +1,7 @@
 PROC=hsvm
 DESCRIPTION=hsvm1.4:hsvm
 
-include ../module.unx
+include ../module.mak
 
 # MAKEDEP dependency list ------------------
 $(F)ana$(O)     : $(I)area.hpp $(I)auto.hpp $(I)bytes.hpp $(I)fpro.h        \
