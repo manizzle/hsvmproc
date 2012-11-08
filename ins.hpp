@@ -24,7 +24,7 @@ enum nameNum {
     HS_andi = 0x1b, // ands immediate 0x1b
     HS_orr = 0x1c, // ors registers 0x1c
     HS_ori = 0x1d, // ors immediate 0x1d
-    HS_xorr = 1e, // xors registers 0x1e
+    HS_xorr = 0x1e, // xors registers 0x1e
     HS_xori = 0x1f, // xors immediate 0x1f
     HS_jmp = 0x20, //jmp 0x20
     HS_je = 0x21, //jmp flag == 0 0x21

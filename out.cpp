@@ -1,3 +1,5 @@
+#include "hs.hpp"
+
 //----------------------------------------------------------------------
 
 inline void OutReg( int rgnum ) { out_register( ph.regNames[rgnum] ); }
@@ -95,9 +97,6 @@ bool idaapi outop( op_t &x )
       OutValue( x, OOFW_IMM );
       break;
 
-    case o_ind_reg:
-      out_symbol( '@' );
-
     case o_reg:
       OutReg( x.reg );
       break;
@@ -109,17 +108,8 @@ bool idaapi outop( op_t &x )
       out_symbol( ')' );
       break;
 
-    case o_ind_mem:
-      out_symbol( '@' );
-
     case o_mem:
     case o_near:
-      v = map_addr(x.addr, x.n, x.type != o_near);
-      if ( !out_name_expr( x, v, x.addr ) )
-      {
-        OutValue( x, OOF_ADDR | OOF_NUMBER | OOFS_NOSIGN | OOFW_16 );
-        QueueMark( Q_noName, cmd.ea );
-      }
       break;
 
     case o_void:

@@ -105,7 +105,7 @@ instruc_t Instructions[] = {
     {NULL, 0}, 
     {NULL, 0}, 
     {"hlt", 0}, //hlt 0x60
-    {"syscall", 0} //syscall 0x61
+    {"syscall", 0}, //syscall 0x61
     {NULL, 0}, 
     {NULL, 0}, 
     {NULL, 0}, 

@@ -1,4 +1,4 @@
-#include <stdint.h>
+#include "hs.hpp"
 
 int idaapi ana(void) {
     ulong instr;
@@ -6,7 +6,7 @@ int idaapi ana(void) {
     uint16_t b23;
     /* HSVM has 32bit instructions, 
        though not all bits are used */
-    instr = ua_next_long(void);
+    instr = ua_next_long();
     op = (*(uint8_t*)(&instr));
     b1 = (*((uint8_t*)(&instr)+1));
     b2 = (*((uint8_t*)(&instr)+2));
@@ -330,7 +330,7 @@ int idaapi ana(void) {
         cmd.Op1.type = o_imm;
         cmd.Op1.offb = 2;
         cmd.Op1.offo = 2;
-        cmd.Op1.dtype = dt_word;
+        cmd.Op1.dtyp = dt_word;
         cmd.Op1.value = b23;
         break;
 
@@ -340,7 +340,7 @@ int idaapi ana(void) {
         cmd.Op1.type = o_imm;
         cmd.Op1.offb = 2;
         cmd.Op1.offo = 2;
-        cmd.Op1.dtype = dt_word;
+        cmd.Op1.dtyp = dt_word;
         cmd.Op1.value = b23;
         break;
 
@@ -350,7 +350,7 @@ int idaapi ana(void) {
         cmd.Op1.type = o_imm;
         cmd.Op1.offb = 2;
         cmd.Op1.offo = 2;
-        cmd.Op1.dtype = dt_word;
+        cmd.Op1.dtyp = dt_word;
         cmd.Op1.value = b23;
         break;
 
@@ -360,7 +360,7 @@ int idaapi ana(void) {
         cmd.Op1.type = o_imm;
         cmd.Op1.offb = 2;
         cmd.Op1.offo = 2;
-        cmd.Op1.dtype = dt_word;
+        cmd.Op1.dtyp = dt_word;
         cmd.Op1.value = b23;
         break;
 
@@ -370,7 +370,7 @@ int idaapi ana(void) {
         cmd.Op1.type = o_imm;
         cmd.Op1.offb = 2;
         cmd.Op1.offo = 2;
-        cmd.Op1.dtype = dt_word;
+        cmd.Op1.dtyp = dt_word;
         cmd.Op1.value = b23;
         break;
 
@@ -380,7 +380,7 @@ int idaapi ana(void) {
         cmd.Op1.type = o_imm;
         cmd.Op1.offb = 2;
         cmd.Op1.offo = 2;
-        cmd.Op1.dtype = dt_word;
+        cmd.Op1.dtyp = dt_word;
         cmd.Op1.value = b23;
         break;
 
@@ -390,7 +390,7 @@ int idaapi ana(void) {
         cmd.Op1.type = o_imm;
         cmd.Op1.offb = 2;
         cmd.Op1.offo = 2;
-        cmd.Op1.dtype = dt_word;
+        cmd.Op1.dtyp = dt_word;
         cmd.Op1.value = b23;
         break;
 
@@ -400,7 +400,7 @@ int idaapi ana(void) {
         cmd.Op1.type = o_imm;
         cmd.Op1.offb = 2;
         cmd.Op1.offo = 2;
-        cmd.Op1.dtype = dt_word;
+        cmd.Op1.dtyp = dt_word;
         cmd.Op1.value = b23;
         break;
 

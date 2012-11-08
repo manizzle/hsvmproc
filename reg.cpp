@@ -369,14 +369,14 @@ processor_t LPH =
   segstart,   // produce start of segment
   segend,     // produce end of segment
 
-  z8_assumes,
+  NULL,
 
   ana,
   emu,
 
   out,
   outop,
-  z8_data,    //intel_data,
+  NULL,    //intel_data,
   NULL,       // compare operands
   NULL,       // can have type
 
@@ -399,7 +399,7 @@ processor_t LPH =
   HS_addr, HS_nop+1,	// int of first inst, int of last instr + 1
   Instructions,		// array of instructions
   NULL,                 // int  (*is_far_jump)(int icode);
-  z8_translate,         // Translation function for offsets
+  NULL,         // Translation function for offsets
   0,                    // int tbyte_size;  -- doesn't exist
   NULL,                 // int (*realcvt)(void *m, ushort *e, ushort swt);
   { 0, 0, 0, 0 },       // char real_width[4];
@@ -416,7 +416,7 @@ processor_t LPH =
   NULL,                 // int (*get_frame_retsize(func_t *pfn)
   NULL,                 // void (*gen_stkvar_def)(char *buf,const member_t *mptr,int32 v);
   gen_spcdef,           // Generate text representation of an item in a special segment
-  Z8_ret,               // Icode of return instruction. It is ok to give any of possible return instructions
+  HS_nop,               // Icode of return instruction. It is ok to give any of possible return instructions
   set_idp_options,      // const char *(*set_idp_options)(const char *keyword,int value_type,const void *value);
   NULL,                 // int (*is_align_insn)(ea_t ea);
   NULL,                 // mvm_t *mvm;
