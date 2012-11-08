@@ -1,88 +1,5 @@
 #include <stdint.h>
 
-//--------------------------------------------------------------------------
-//      I N S T R U C T I O N
-//--------------------------------------------------------------------------
-
-// Structure to hold information about an instruction. This structure is
-// filled by the analysis step of IDP and used by the emulation and
-// conversion to text steps. The kernel uses this structure too.
-// All structure fields except cs, ip, ea, Operand.n, Operand.flags
-// are initialized to zero by the kernel. The rest should be filled
-// by ana().
-
-class insn_t
-{
-public:
-// Current segment base paragraph. Initialized by the kernel.
-
-  ea_t cs;                      // segment base (in paragraphs)
-
-
-// Virtual address of the instruction (address within the segment)
-// Initialized by the kernel.
-
-  ea_t ip;                      // offset in the segment
-
-
-// Linear address of the instruction.
-// Initialized by the kernel.
-
-  ea_t ea;                      // instruction start addresses
-
-
-// Internal code of instruction. IDP should define its own instruction
-// codes. These codes are usually defined in ins.hpp. The array of instruction
-// names and features (ins.cpp) is accessed using this code.
-
-  uint16 itype;                 // instruction code (see ins.hpp)
-                                // only for canonical insns (not user defined!):
-  inline bool is_canon_insn(void) const; // (see def in idp.hpp)
-  inline uint32 get_canon_feature(void) const; // (see def in idp.hpp)
-  inline const char *get_canon_mnem(void) const; // (see def in idp.hpp)
-
-// Size of instruction in bytes.
-// The analyzer should put here the actual size of the instruction.
-
-  uint16 size;                  // instruction size in bytes
-
-
-// Additinal information about the instruction.
-// You may use these field as you want.
-
-  union
-  {
-    uint16 auxpref;             // processor dependent field
-    struct
-    {
-      uchar low;
-      uchar high;
-    } auxpref_chars;
-  };
-  char segpref;                 // processor dependent field
-  char insnpref;                // processor dependent field
-
-// Information about instruction operands.
-
-#define UA_MAXOP        6
-  op_t Operands[UA_MAXOP];
-
-  #define Op1 Operands[0]
-  #define Op2 Operands[1]
-  #define Op3 Operands[2]
-  #define Op4 Operands[3]
-  #define Op5 Operands[4]
-  #define Op6 Operands[5]
-
-  char flags;                   // instruction flags
-#define INSN_MACRO  0x01        // macro instruction
-#define INSN_MODMAC 0x02        // macros: may modify the database
-                                // to make room for the macro insn
-  bool is_macro(void) const { return (flags & INSN_MACRO) != 0; }
-
-};
-
-
 int idaapi ana(void) {
     ulong instr;
     uint8_t op, b1, b2, b3;
@@ -135,8 +52,631 @@ int idaapi ana(void) {
         cmd.Op2.value = b23;
         break;
 
+    case 0x12:
+        // r0 = r1 - r2
+        cmd.itype = op;
+        cmd.Op1.type = o_reg;
+        cmd.Op1.offb = 1;
+        cmd.Op1.offo = 1;
+        cmd.Op1.dtyp = dt_word;
+        cmd.Op1.reg = b1;
+
+        cmd.Op2.type = o_reg;
+        cmd.Op2.offb = 2;
+        cmd.Op2.offo = 2;
+        cmd.Op2.dtyp = dt_word;
+        cmd.Op2.reg = b2;
+
+        cmd.Op3.type = o_reg;
+        cmd.Op3.offb = 3;
+        cmd.Op3.offo = 3;
+        cmd.Op3.dtyp = dt_word;
+        cmd.Op2.reg = b3;
+
+        break;
+    case 0x13:
+        // r0 = r0 - X
+        cmd.itype = op;
+        cmd.Op1.type = o_reg;
+        cmd.Op1.offb = 1;
+        cmd.Op1.offo = 1;
+        cmd.Op1.dtyp = dt_word;
+        cmd.Op1.reg = b1;
+
+        cmd.Op2.type = o_imm;
+        cmd.Op2.offb = 2;
+        cmd.Op2.offo = 2;
+        cmd.Op2.dtyp = dt_word;
+        cmd.Op2.value = b23;
+        break;
+
+    case 0x14:
+        // r0 = r1 * r2
+        cmd.itype = op;
+        cmd.Op1.type = o_reg;
+        cmd.Op1.offb = 1;
+        cmd.Op1.offo = 1;
+        cmd.Op1.dtyp = dt_word;
+        cmd.Op1.reg = b1;
+
+        cmd.Op2.type = o_reg;
+        cmd.Op2.offb = 2;
+        cmd.Op2.offo = 2;
+        cmd.Op2.dtyp = dt_word;
+        cmd.Op2.reg = b2;
+
+        cmd.Op3.type = o_reg;
+        cmd.Op3.offb = 3;
+        cmd.Op3.offo = 3;
+        cmd.Op3.dtyp = dt_word;
+        cmd.Op2.reg = b3;
+
+        break;
+
+    case 0x15:
+        // r0 = r0 * X
+        cmd.itype = op;
+        cmd.Op1.type = o_reg;
+        cmd.Op1.offb = 1;
+        cmd.Op1.offo = 1;
+        cmd.Op1.dtyp = dt_word;
+        cmd.Op1.reg = b1;
+
+        cmd.Op2.type = o_imm;
+        cmd.Op2.offb = 2;
+        cmd.Op2.offo = 2;
+        cmd.Op2.dtyp = dt_word;
+        cmd.Op2.value = b23;
+        break;
+
+    case 0x16:
+        // r0 = r1 / r2
+        cmd.itype = op;
+        cmd.Op1.type = o_reg;
+        cmd.Op1.offb = 1;
+        cmd.Op1.offo = 1;
+        cmd.Op1.dtyp = dt_word;
+        cmd.Op1.reg = b1;
+
+        cmd.Op2.type = o_reg;
+        cmd.Op2.offb = 2;
+        cmd.Op2.offo = 2;
+        cmd.Op2.dtyp = dt_word;
+        cmd.Op2.reg = b2;
+
+        cmd.Op3.type = o_reg;
+        cmd.Op3.offb = 3;
+        cmd.Op3.offo = 3;
+        cmd.Op3.dtyp = dt_word;
+        cmd.Op2.reg = b3;
+
+        break;
+
+    case 0x17:
+        // r0 = r0 / X
+        cmd.itype = op;
+        cmd.Op1.type = o_reg;
+        cmd.Op1.offb = 1;
+        cmd.Op1.offo = 1;
+        cmd.Op1.dtyp = dt_word;
+        cmd.Op1.reg = b1;
+
+        cmd.Op2.type = o_imm;
+        cmd.Op2.offb = 2;
+        cmd.Op2.offo = 2;
+        cmd.Op2.dtyp = dt_word;
+        cmd.Op2.value = b23;
+        break;
+
+    case 0x18:
+        // r0 = r1 % r2
+        cmd.itype = op;
+        cmd.Op1.type = o_reg;
+        cmd.Op1.offb = 1;
+        cmd.Op1.offo = 1;
+        cmd.Op1.dtyp = dt_word;
+        cmd.Op1.reg = b1;
+
+        cmd.Op2.type = o_reg;
+        cmd.Op2.offb = 2;
+        cmd.Op2.offo = 2;
+        cmd.Op2.dtyp = dt_word;
+        cmd.Op2.reg = b2;
+
+        cmd.Op3.type = o_reg;
+        cmd.Op3.offb = 3;
+        cmd.Op3.offo = 3;
+        cmd.Op3.dtyp = dt_word;
+        cmd.Op2.reg = b3;
+
+        break;
+
+    case 0x19:
+        // r0 = r0 % X
+        cmd.itype = op;
+        cmd.Op1.type = o_reg;
+        cmd.Op1.offb = 1;
+        cmd.Op1.offo = 1;
+        cmd.Op1.dtyp = dt_word;
+        cmd.Op1.reg = b1;
+
+        cmd.Op2.type = o_imm;
+        cmd.Op2.offb = 2;
+        cmd.Op2.offo = 2;
+        cmd.Op2.dtyp = dt_word;
+        cmd.Op2.value = b23;
+        break;
+
+    case 0x1a:
+        // r0 = r1 & r2
+        cmd.itype = op;
+        cmd.Op1.type = o_reg;
+        cmd.Op1.offb = 1;
+        cmd.Op1.offo = 1;
+        cmd.Op1.dtyp = dt_word;
+        cmd.Op1.reg = b1;
+
+        cmd.Op2.type = o_reg;
+        cmd.Op2.offb = 2;
+        cmd.Op2.offo = 2;
+        cmd.Op2.dtyp = dt_word;
+        cmd.Op2.reg = b2;
+
+        cmd.Op3.type = o_reg;
+        cmd.Op3.offb = 3;
+        cmd.Op3.offo = 3;
+        cmd.Op3.dtyp = dt_word;
+        cmd.Op2.reg = b3;
+
+        break;
+
+    case 0x1b:
+        // r0 = r0 & X
+        cmd.itype = op;
+        cmd.Op1.type = o_reg;
+        cmd.Op1.offb = 1;
+        cmd.Op1.offo = 1;
+        cmd.Op1.dtyp = dt_word;
+        cmd.Op1.reg = b1;
+
+        cmd.Op2.type = o_imm;
+        cmd.Op2.offb = 2;
+        cmd.Op2.offo = 2;
+        cmd.Op2.dtyp = dt_word;
+        cmd.Op2.value = b23;
+        break;
+
+    case 0x1c:
+        // r0 = r1 | r2
+        cmd.itype = op;
+        cmd.Op1.type = o_reg;
+        cmd.Op1.offb = 1;
+        cmd.Op1.offo = 1;
+        cmd.Op1.dtyp = dt_word;
+        cmd.Op1.reg = b1;
+
+        cmd.Op2.type = o_reg;
+        cmd.Op2.offb = 2;
+        cmd.Op2.offo = 2;
+        cmd.Op2.dtyp = dt_word;
+        cmd.Op2.reg = b2;
+
+        cmd.Op3.type = o_reg;
+        cmd.Op3.offb = 3;
+        cmd.Op3.offo = 3;
+        cmd.Op3.dtyp = dt_word;
+        cmd.Op2.reg = b3;
+
+        break;
+
+    case 0x1d:
+        // r0 = r0 | X
+        cmd.itype = op;
+        cmd.Op1.type = o_reg;
+        cmd.Op1.offb = 1;
+        cmd.Op1.offo = 1;
+        cmd.Op1.dtyp = dt_word;
+        cmd.Op1.reg = b1;
+
+        cmd.Op2.type = o_imm;
+        cmd.Op2.offb = 2;
+        cmd.Op2.offo = 2;
+        cmd.Op2.dtyp = dt_word;
+        cmd.Op2.value = b23;
+        break;
+
+    case 0x1e:
+        // r0 = r1 ^ r2
+        cmd.itype = op;
+        cmd.Op1.type = o_reg;
+        cmd.Op1.offb = 1;
+        cmd.Op1.offo = 1;
+        cmd.Op1.dtyp = dt_word;
+        cmd.Op1.reg = b1;
+
+        cmd.Op2.type = o_reg;
+        cmd.Op2.offb = 2;
+        cmd.Op2.offo = 2;
+        cmd.Op2.dtyp = dt_word;
+        cmd.Op2.reg = b2;
+
+        cmd.Op3.type = o_reg;
+        cmd.Op3.offb = 3;
+        cmd.Op3.offo = 3;
+        cmd.Op3.dtyp = dt_word;
+        cmd.Op2.reg = b3;
+
+        break;
+
+    case 0x1f:
+        // r0 = r0 ^ X
+        cmd.itype = op;
+        cmd.Op1.type = o_reg;
+        cmd.Op1.offb = 1;
+        cmd.Op1.offo = 1;
+        cmd.Op1.dtyp = dt_word;
+        cmd.Op1.reg = b1;
+
+        cmd.Op2.type = o_imm;
+        cmd.Op2.offb = 2;
+        cmd.Op2.offo = 2;
+        cmd.Op2.dtyp = dt_word;
+        cmd.Op2.value = b23;
+        break;
+
+    case 0x20:
+        // jmp imm
+        cmd.itype = op;
+        cmd.Op1.type = o_imm;
+        cmd.Op1.offb = 2;
+        cmd.Op1.offo = 2;
+        cmd.Op1.dtype = dt_word;
+        cmd.Op1.value = b23;
+        break;
+
+    case 0x21:
+        // je jmp flag == 0
+        cmd.itype = op;
+        cmd.Op1.type = o_imm;
+        cmd.Op1.offb = 2;
+        cmd.Op1.offo = 2;
+        cmd.Op1.dtype = dt_word;
+        cmd.Op1.value = b23;
+        break;
+
+    case 0x22:
+        // jne jmp flag != 0
+        cmd.itype = op;
+        cmd.Op1.type = o_imm;
+        cmd.Op1.offb = 2;
+        cmd.Op1.offo = 2;
+        cmd.Op1.dtype = dt_word;
+        cmd.Op1.value = b23;
+        break;
+
+    case 0x23:
+        // jl jmp flag < 0
+        cmd.itype = op;
+        cmd.Op1.type = o_imm;
+        cmd.Op1.offb = 2;
+        cmd.Op1.offo = 2;
+        cmd.Op1.dtype = dt_word;
+        cmd.Op1.value = b23;
+        break;
+
+    case 0x24:
+        // jle jmp flag <= 0
+        cmd.itype = op;
+        cmd.Op1.type = o_imm;
+        cmd.Op1.offb = 2;
+        cmd.Op1.offo = 2;
+        cmd.Op1.dtype = dt_word;
+        cmd.Op1.value = b23;
+        break;
+
+    case 0x25:
+        // jg jmp flag > 0
+        cmd.itype = op;
+        cmd.Op1.type = o_imm;
+        cmd.Op1.offb = 2;
+        cmd.Op1.offo = 2;
+        cmd.Op1.dtype = dt_word;
+        cmd.Op1.value = b23;
+        break;
+
+    case 0x26:
+        // jge jmp flag >= 0
+        cmd.itype = op;
+        cmd.Op1.type = o_imm;
+        cmd.Op1.offb = 2;
+        cmd.Op1.offo = 2;
+        cmd.Op1.dtype = dt_word;
+        cmd.Op1.value = b23;
+        break;
+
+    case 0x28:
+        // call imm
+        cmd.itype = op;
+        cmd.Op1.type = o_imm;
+        cmd.Op1.offb = 2;
+        cmd.Op1.offo = 2;
+        cmd.Op1.dtype = dt_word;
+        cmd.Op1.value = b23;
+        break;
+
+    case 0x29:
+        // ret
+        cmd.itype = op;
+        cmd.Op1.type = o_void;
+        cmd.Op1.dtyp = dt_void;
+        break;
+        
+    case 0x30:
+        // loadi =  r0, imm : r0 = mem[imm]
+        cmd.itype = op;
+        cmd.Op1.type = o_reg;
+        cmd.Op1.offb = 1;
+        cmd.Op1.offo = 1;
+        cmd.Op1.dtyp = dt_word;
+        cmd.Op1.reg = b1;
+
+        cmd.Op2.type = o_imm;
+        cmd.Op2.offb = 2;
+        cmd.Op2.offo = 2;
+        cmd.Op2.dtyp = dt_word;
+        cmd.Op2.value = b23;
+        break;
+
+    case 0x31:
+        // loadr = load  r0, r1 : r0 = mem[r1]
+        cmd.itype = op;
+        cmd.Op1.type = o_reg;
+        cmd.Op1.offb = 1;
+        cmd.Op1.offo = 1;
+        cmd.Op1.dtyp = dt_word;
+        cmd.Op1.reg = b1;
+
+        cmd.Op2.type = o_reg;
+        cmd.Op2.offb = 2;
+        cmd.Op2.offo = 2;
+        cmd.Op2.dtyp = dt_word;
+        cmd.Op2.reg = b2;
+        break;
+
+    case 0x32:
+        // loadbi =  r0, imm : r0 = mem[imm] 0x00FF
+        cmd.itype = op;
+        cmd.Op1.type = o_reg;
+        cmd.Op1.offb = 1;
+        cmd.Op1.offo = 1;
+        cmd.Op1.dtyp = dt_word;
+        cmd.Op1.reg = b1;
+
+        cmd.Op2.type = o_imm;
+        cmd.Op2.offb = 2;
+        cmd.Op2.offo = 2;
+        cmd.Op2.dtyp = dt_word;
+        cmd.Op2.value = b23;
+        break;
+
+    case 0x33:
+        // loadr = load  r0, r1 : r0 = mem[r1] & 0x00FF
+        cmd.itype = op;
+        cmd.Op1.type = o_reg;
+        cmd.Op1.offb = 1;
+        cmd.Op1.offo = 1;
+        cmd.Op1.dtyp = dt_word;
+        cmd.Op1.reg = b1;
+
+        cmd.Op2.type = o_reg;
+        cmd.Op2.offb = 2;
+        cmd.Op2.offo = 2;
+        cmd.Op2.dtyp = dt_word;
+        cmd.Op2.reg = b2;
+        break;
+        
+    case 0x34:
+        // stori immm, r0 : mem[imm] = r0
+        cmd.itype = op;
+        cmd.Op1.type = o_reg;
+        cmd.Op1.offb = 1;
+        cmd.Op1.offo = 1;
+        cmd.Op1.dtyp = dt_word;
+        cmd.Op1.reg = b1;
+
+        cmd.Op2.type = o_imm;
+        cmd.Op2.offb = 2;
+        cmd.Op2.offo = 2;
+        cmd.Op2.dtyp = dt_word;
+        cmd.Op2.value = b23;
+        break;
+
+    case 0x35:
+        // storr  r0, r1 : mem[r0] = r1
+        cmd.itype = op;
+        cmd.Op1.type = o_reg;
+        cmd.Op1.offb = 1;
+        cmd.Op1.offo = 1;
+        cmd.Op1.dtyp = dt_word;
+        cmd.Op1.reg = b1;
+
+        cmd.Op2.type = o_reg;
+        cmd.Op2.offb = 2;
+        cmd.Op2.offo = 2;
+        cmd.Op2.dtyp = dt_word;
+        cmd.Op2.reg = b2;
+        break;
+
+    case 0x36:
+        // storbi imm, r0 : mem[imm] = r0 & 0x00FF
+        cmd.itype = op;
+        cmd.Op1.type = o_reg;
+        cmd.Op1.offb = 1;
+        cmd.Op1.offo = 1;
+        cmd.Op1.dtyp = dt_word;
+        cmd.Op1.reg = b1;
+
+        cmd.Op2.type = o_imm;
+        cmd.Op2.offb = 2;
+        cmd.Op2.offo = 2;
+        cmd.Op2.dtyp = dt_word;
+        cmd.Op2.value = b23;
+        break;
+
+    case 0x37:
+        // storbr r0, r1 : mem[r0] = r1 & 0x00FF
+        cmd.itype = op;
+        cmd.Op1.type = o_reg;
+        cmd.Op1.offb = 1;
+        cmd.Op1.offo = 1;
+        cmd.Op1.dtyp = dt_word;
+        cmd.Op1.reg = b1;
+
+        cmd.Op2.type = o_reg;
+        cmd.Op2.offb = 2;
+        cmd.Op2.offo = 2;
+        cmd.Op2.dtyp = dt_word;
+        cmd.Op2.reg = b2;
+        break;
+
+    case 0x40:
+        // in = read into r0
+        cmd.itype = op;
+        cmd.Op1.type = o_reg;
+        cmd.Op1.offb = 1;
+        cmd.Op1.offo = 1;
+        cmd.Op1.dtyp = dt_word;
+        cmd.Op1.reg = b1;
+        break;
+        
+    case 0x41:
+        // out = write out r0
+        cmd.itype = op;
+        cmd.Op1.type = o_reg;
+        cmd.Op1.offb = 1;
+        cmd.Op1.offo = 1;
+        cmd.Op1.dtyp = dt_word;
+        cmd.Op1.reg = b1;
+        break;
+
+    case 0x42:
+        // push r0 -> write to stack
+        cmd.itype = op;
+        cmd.Op1.type = o_reg;
+        cmd.Op1.offb = 1;
+        cmd.Op1.offo = 1;
+        cmd.Op1.dtyp = dt_word;
+        cmd.Op1.reg = b1;        
+        break;
+        
+    case 0x43:
+        // push imm -> write to stack
+        cmd.itype = op;
+        cmd.Op1.type = o_imm;
+        cmd.Op1.offb = 2;
+        cmd.Op1.offo = 2;
+        cmd.Op1.dtyp = dt_word;
+        cmd.Op1.value = b23;        
+        break;
+        
+    case 0x44:
+        // pop r0 -> read from stack
+        cmd.itype = op;
+        cmd.Op1.type = o_reg;
+        cmd.Op1.offb = 1;
+        cmd.Op1.offo = 1;
+        cmd.Op1.dtyp = dt_word;
+        cmd.Op1.reg = b1;        
+        break;
+        
+    case 0x51:
+        // mov r0, r1 -> r0 = r1
+        cmd.itype = op;
+        cmd.Op1.type = o_reg;
+        cmd.Op1.offb = 1;
+        cmd.Op1.offo = 1;
+        cmd.Op1.dtyp = dt_word;
+        cmd.Op1.reg = b1;
+
+        cmd.Op2.type = o_reg;
+        cmd.Op2.offb = 2;
+        cmd.Op2.offo = 2;
+        cmd.Op2.dtyp = dt_word;
+        cmd.Op2.reg = b2;
+        break;
+        
+    case 0x52:
+        // mov r0, imm -> r0 = imm
+        cmd.itype = op;
+        cmd.Op1.type = o_reg;
+        cmd.Op1.offb = 1;
+        cmd.Op1.offo = 1;
+        cmd.Op1.dtyp = dt_word;
+        cmd.Op1.reg = b1;
+
+        cmd.Op2.type = o_imm;
+        cmd.Op2.offb = 2;
+        cmd.Op2.offo = 2;
+        cmd.Op2.dtyp = dt_word;
+        cmd.Op2.value = b23;
+        break;
+
+    case 0x53:
+        // cmpr r0, r1 -> flags = r0 - r1
+        cmd.itype = op;
+        cmd.Op1.type = o_reg;
+        cmd.Op1.offb = 1;
+        cmd.Op1.offo = 1;
+        cmd.Op1.dtyp = dt_word;
+        cmd.Op1.reg = b1;
+
+        cmd.Op2.type = o_reg;
+        cmd.Op2.offb = 2;
+        cmd.Op2.offo = 2;
+        cmd.Op2.dtyp = dt_word;
+        cmd.Op2.reg = b2;
+        break;
+        
+    case 0x54:
+        // cmpi r0, imm -> flags = r0 - imm
+        cmd.itype = op;
+        cmd.Op1.type = o_reg;
+        cmd.Op1.offb = 1;
+        cmd.Op1.offo = 1;
+        cmd.Op1.dtyp = dt_word;
+        cmd.Op1.reg = b1;
+
+        cmd.Op2.type = o_imm;
+        cmd.Op2.offb = 2;
+        cmd.Op2.offo = 2;
+        cmd.Op2.dtyp = dt_word;
+        cmd.Op2.value = b23;
+        break;
+
+    case 0x60:
+        // hlt
+        cmd.itype = op;
+        cmd.Op1.type = o_void;
+        cmd.Op1.dtyp = dt_void;
+        break;
+        
+    case 0x61:
+        // syscall
+        cmd.itype = op;
+        cmd.Op1.type = o_void;
+        cmd.Op1.dtyp = dt_void;
+        break;
+
+    case 0x90:
+        // nop
+        cmd.itype = op;
+        cmd.Op1.type = o_void;
+        cmd.Op1.dtyp = dt_void;
+        break;
+
     default:
         break;
     }
+    return sizeof(instr);
 }
         
